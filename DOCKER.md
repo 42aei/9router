@@ -185,3 +185,15 @@ GHCR publishing uses the workflow's `GITHUB_TOKEN` with package write permission
 The optional repository variables `ALPINE_MIRROR` and `NPM_REGISTRY` can override the default package mirrors used by the CI Docker build.
 
 Workflow: `.github/workflows/docker-publish.yml`
+
+## Fork builds (42aei)
+
+The fork `42aei/9router` builds its own images from a release branch `release/<upstream version>-42aei.<n>`, created from the fork's `master`.
+
+Fixes are cherry-picked onto that release branch only, never into `master`, and are dropped once upstream merges them. For an older upstream version, the commit that adds `fork-image.yml` is cherry-picked onto that release branch too.
+
+Pushing the tag `v<upstream version>-42aei.<n>` (e.g. `v0.5.104-42aei.1`) builds `linux/amd64` and `linux/arm64`, health-checks both, and publishes `ghcr.io/42aei/9router:<upstream version>-42aei.<n>` (e.g. `ghcr.io/42aei/9router:0.5.104-42aei.1`).
+
+Exactly one tag is published: no `latest` tag and no Docker Hub. The upstream workflows are disabled on the fork.
+
+Workflow: `.github/workflows/fork-image.yml`
